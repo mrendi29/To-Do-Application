@@ -30,7 +30,7 @@ Here's a walkthrough of implemented user stories:
 
 ## Notes
 
-The only challenge i encountered was when i was building the optional features.
+TBA
 
 ## License
 
