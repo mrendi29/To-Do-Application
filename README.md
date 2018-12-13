@@ -30,7 +30,7 @@ Here's a walkthrough of implemented user stories:
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+The only challenge i encountered was when i was building the optional features.
 
 ## License
 
