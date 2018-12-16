@@ -1,5 +1,6 @@
 package com.example.caushie.todo_app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,6 +20,13 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    // A NUMERIC CODE THAT ALLOWS US TO IDENTIFY   THE EDIT ACTIVITY THAT WE WANT TO LAUNCH
+
+    public static final int EDIT_REQUEST_CODE = 20;
+
+    public static final String ITEM_TEXT = "item_text";
+
+    public static final String ITEM_POSITION = "itemPosition";
 
     //Field Declarations  Objects that will be associated with any instance of mainActivity.
 
@@ -59,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         setupListViewListener();
+
 
     }
 
@@ -108,6 +117,59 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        // Seting up onclicklistener for our adapter( edit)
+
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Create new activity
+                //Pass data being editet to activity
+                // Display activity to user.
+
+                Intent intent = new Intent(MainActivity.this, EditItemActivity.class);
+                //items is our arraylist
+                intent.putExtra(ITEM_TEXT, items.get(position));
+                intent.putExtra(ITEM_POSITION, position);
+
+                MainActivity.this.startActivityForResult(intent, EDIT_REQUEST_CODE);
+
+            }
+        });
+
+    }
+
+    // Handle result from edit activity.
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //If the edit activity compleeted ok.
+
+        if (resultCode == RESULT_OK && requestCode == EDIT_REQUEST_CODE) {
+
+            // Extract updated item text from result intent extras
+            String updatedItem = data.getExtras().getString(ITEM_TEXT);
+
+            //Extract original position of edited item.
+            int position = data.getExtras().getInt(ITEM_POSITION);
+
+            //update the models with the new item text at the edited position.
+
+            items.set(position, updatedItem);
+
+            //notify adapter that model changed
+            itemsAdapter.notifyDataSetChanged();
+            //persist change model
+
+            writeItems();
+
+            //notify the user that operation completed succesfully
+
+            Toast.makeText(this, "Item updated successfully", Toast.LENGTH_SHORT).show();
+        }
     }
 
     //Will return a file that will allow us to acces the stored model.
